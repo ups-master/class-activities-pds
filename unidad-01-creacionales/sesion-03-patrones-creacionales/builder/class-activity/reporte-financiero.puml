@@ -1,0 +1,45 @@
+@startuml
+title Caso 3 - Reporte financiero (Builder fluido)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class ReporteFinanciero {
+    - titulo : String
+    - periodo : String
+    - indicadores : List<String>
+    - tablas : List<String>
+    - graficos : List<String>
+    - filtros : List<String>
+    - observaciones : String
+    - secciones : List<String>
+}
+
+class ConstructorReporte {
+    - reporte : ReporteFinanciero
+
+    + titulo(valor : String) : ConstructorReporte
+    + periodo(valor : String) : ConstructorReporte
+    + indicador(valor : String) : ConstructorReporte
+    + tabla(valor : String) : ConstructorReporte
+    + grafico(valor : String) : ConstructorReporte
+    + filtro(valor : String) : ConstructorReporte
+    + observaciones(valor : String) : ConstructorReporte
+    + seccion(valor : String) : ConstructorReporte
+    + construir() : ReporteFinanciero
+}
+
+ConstructorReporte --> ReporteFinanciero : construye
+
+note right of ConstructorReporte
+  Cada componente se agrega
+  progresivamente. Solo título y
+  período son obligatorios.
+end note
+
+note as Supuesto
+  Supuesto: los atributos y las operaciones
+  son de ejemplo; el enunciado no los define.
+end note
+
+@enduml

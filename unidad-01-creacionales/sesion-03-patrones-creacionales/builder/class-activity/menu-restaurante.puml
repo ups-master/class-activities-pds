@@ -1,0 +1,72 @@
+@startuml
+title Caso 4 - Menú de restaurante (Builder clásico)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Menu {
+    - entrada : String
+    - platoPrincipal : String
+    - bebida : String
+    - postre : String
+    - complementos : List<String>
+}
+
+interface ConstructorMenu {
+    + agregarEntrada() : void
+    + agregarPlatoPrincipal() : void
+    + agregarBebida() : void
+    + agregarPostre() : void
+    + agregarComplementos() : void
+    + obtenerMenu() : Menu
+}
+
+class ConstructorMenuEjecutivo {
+    - menu : Menu
+
+    + agregarEntrada() : void
+    + agregarPlatoPrincipal() : void
+    + agregarBebida() : void
+    + agregarPostre() : void
+    + agregarComplementos() : void
+    + obtenerMenu() : Menu
+}
+
+class ConstructorMenuInfantil {
+    - menu : Menu
+
+    + agregarEntrada() : void
+    + agregarPlatoPrincipal() : void
+    + agregarBebida() : void
+    + agregarPostre() : void
+    + agregarComplementos() : void
+    + obtenerMenu() : Menu
+}
+
+class DirectorMenu {
+    - constructor : ConstructorMenu
+
+    + DirectorMenu(constructor : ConstructorMenu)
+    + construirMenu() : Menu
+}
+
+ConstructorMenu <|.. ConstructorMenuEjecutivo
+ConstructorMenu <|.. ConstructorMenuInfantil
+
+DirectorMenu --> ConstructorMenu : utiliza
+
+ConstructorMenuEjecutivo ..> Menu : <<create>>
+ConstructorMenuInfantil ..> Menu : <<create>>
+
+note right of DirectorMenu
+  Mismo proceso general; cada constructor
+  decide qué componentes incluye
+  (el infantil omite la entrada).
+end note
+
+note as Supuesto
+  Supuesto: los atributos y las operaciones
+  son de ejemplo; el enunciado no los define.
+end note
+
+@enduml

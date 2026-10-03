@@ -1,0 +1,54 @@
+@startuml
+title Caso 1 - Logística y transporte (Factory Method)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface Transporte {
+    + entregar(carga : String) : void
+}
+
+class Camion {
+    + entregar(carga : String) : void
+}
+
+class Buque {
+    + entregar(carga : String) : void
+}
+
+abstract class Logistica {
+    + planificarEnvio(carga : String) : void
+    # {abstract} crearTransporte() : Transporte
+}
+
+class LogisticaTerrestre {
+    # crearTransporte() : Transporte
+}
+
+class LogisticaMaritima {
+    # crearTransporte() : Transporte
+}
+
+Transporte <|.. Camion
+Transporte <|.. Buque
+
+Logistica <|-- LogisticaTerrestre
+Logistica <|-- LogisticaMaritima
+
+Logistica ..> Transporte : usa
+LogisticaTerrestre ..> Camion : <<create>>
+LogisticaMaritima ..> Buque : <<create>>
+
+note right of Logistica
+  planificarEnvio() registra la carga,
+  llama a crearTransporte() y hace
+  el seguimiento sin conocer el
+  transporte concreto.
+end note
+
+note as Supuesto
+  Supuesto: los atributos y las operaciones
+  son de ejemplo; el enunciado no los define.
+end note
+
+@enduml

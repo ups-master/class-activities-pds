@@ -1,0 +1,72 @@
+@startuml
+title Caso 2 - Gestión de documentos (Factory Method)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface Documento {
+    + abrir() : void
+    + guardar() : void
+    + validar() : boolean
+}
+
+class DocumentoPdf {
+    + abrir() : void
+    + guardar() : void
+    + validar() : boolean
+}
+
+class DocumentoTexto {
+    + abrir() : void
+    + guardar() : void
+    + validar() : boolean
+}
+
+class HojaCalculo {
+    + abrir() : void
+    + guardar() : void
+    + validar() : boolean
+}
+
+abstract class ModuloDocumentos {
+    + procesar(ruta : String) : void
+    # {abstract} crearDocumento(ruta : String) : Documento
+}
+
+class ModuloPdf {
+    # crearDocumento(ruta : String) : Documento
+}
+
+class ModuloTexto {
+    # crearDocumento(ruta : String) : Documento
+}
+
+class ModuloHojaCalculo {
+    # crearDocumento(ruta : String) : Documento
+}
+
+Documento <|.. DocumentoPdf
+Documento <|.. DocumentoTexto
+Documento <|.. HojaCalculo
+
+ModuloDocumentos <|-- ModuloPdf
+ModuloDocumentos <|-- ModuloTexto
+ModuloDocumentos <|-- ModuloHojaCalculo
+
+ModuloDocumentos ..> Documento : usa
+ModuloPdf ..> DocumentoPdf : <<create>>
+ModuloTexto ..> DocumentoTexto : <<create>>
+ModuloHojaCalculo ..> HojaCalculo : <<create>>
+
+note right of ModuloDocumentos
+  procesar() abre, valida y guarda
+  el documento. Un formato nuevo
+  solo añade un Documento y su módulo.
+end note
+
+note as Supuesto
+  Supuesto: los atributos y las operaciones
+  son de ejemplo; el enunciado no los define.
+end note
+
+@enduml

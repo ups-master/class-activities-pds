@@ -1,0 +1,47 @@
+@startuml
+title Caso 2 - Personaje de videojuego (Builder fluido)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Personaje {
+    - nombre : String
+    - nivel : int
+    - raza : String
+    - clase : String
+    - habilidades : List<String>
+    - armas : List<String>
+    - armaduras : List<String>
+    - objetosEspeciales : List<String>
+    - accesorios : List<String>
+}
+
+class ConstructorPersonaje {
+    - personaje : Personaje
+
+    + nombre(valor : String) : ConstructorPersonaje
+    + nivel(valor : int) : ConstructorPersonaje
+    + raza(valor : String) : ConstructorPersonaje
+    + clase(valor : String) : ConstructorPersonaje
+    + habilidad(valor : String) : ConstructorPersonaje
+    + arma(valor : String) : ConstructorPersonaje
+    + armadura(valor : String) : ConstructorPersonaje
+    + objetoEspecial(valor : String) : ConstructorPersonaje
+    + accesorio(valor : String) : ConstructorPersonaje
+    + construir() : Personaje
+}
+
+ConstructorPersonaje --> Personaje : construye
+
+note right of ConstructorPersonaje
+  Obligatorios: nombre, nivel, raza y clase
+  (se validan en construir()).
+  El resto es opcional y se encadena.
+end note
+
+note as Supuesto
+  Supuesto: los atributos y las operaciones
+  son de ejemplo; el enunciado no los define.
+end note
+
+@enduml

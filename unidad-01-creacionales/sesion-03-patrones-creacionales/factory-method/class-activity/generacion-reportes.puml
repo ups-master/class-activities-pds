@@ -1,0 +1,68 @@
+@startuml
+title Caso 4 - Generación de reportes (Factory Method)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface Reporte {
+    + construir(datos : String) : void
+    + exportar() : void
+}
+
+class ReportePdf {
+    + construir(datos : String) : void
+    + exportar() : void
+}
+
+class ReporteExcel {
+    + construir(datos : String) : void
+    + exportar() : void
+}
+
+class ReporteHtml {
+    + construir(datos : String) : void
+    + exportar() : void
+}
+
+abstract class GeneradorReporte {
+    + generar(consulta : String) : void
+    # {abstract} crearReporte() : Reporte
+}
+
+class GeneradorPdf {
+    # crearReporte() : Reporte
+}
+
+class GeneradorExcel {
+    # crearReporte() : Reporte
+}
+
+class GeneradorHtml {
+    # crearReporte() : Reporte
+}
+
+Reporte <|.. ReportePdf
+Reporte <|.. ReporteExcel
+Reporte <|.. ReporteHtml
+
+GeneradorReporte <|-- GeneradorPdf
+GeneradorReporte <|-- GeneradorExcel
+GeneradorReporte <|-- GeneradorHtml
+
+GeneradorReporte ..> Reporte : usa
+GeneradorPdf ..> ReportePdf : <<create>>
+GeneradorExcel ..> ReporteExcel : <<create>>
+GeneradorHtml ..> ReporteHtml : <<create>>
+
+note right of GeneradorReporte
+  generar() consulta y procesa los datos
+  y construye el reporte. No hay if/switch
+  por formato: lo decide la subclase.
+end note
+
+note as Supuesto
+  Supuesto: los atributos y las operaciones
+  son de ejemplo; el enunciado no los define.
+end note
+
+@enduml

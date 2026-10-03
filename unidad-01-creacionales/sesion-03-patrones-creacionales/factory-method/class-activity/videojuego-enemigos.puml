@@ -1,0 +1,53 @@
+@startuml
+title Caso 3 - Videojuego y generación de enemigos (Factory Method)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface Enemigo {
+    + atacar() : void
+}
+
+class Guerrero {
+    + atacar() : void
+}
+
+class Robot {
+    + atacar() : void
+}
+
+abstract class Nivel {
+    + preparar() : void
+    # {abstract} crearEnemigo() : Enemigo
+}
+
+class NivelMedieval {
+    # crearEnemigo() : Enemigo
+}
+
+class NivelFuturista {
+    # crearEnemigo() : Enemigo
+}
+
+Enemigo <|.. Guerrero
+Enemigo <|.. Robot
+
+Nivel <|-- NivelMedieval
+Nivel <|-- NivelFuturista
+
+Nivel ..> Enemigo : usa
+NivelMedieval ..> Guerrero : <<create>>
+NivelFuturista ..> Robot : <<create>>
+
+note right of Nivel
+  preparar() es el proceso común:
+  cada nivel decide qué enemigo
+  necesita mediante crearEnemigo().
+end note
+
+note as Supuesto
+  Supuesto: los atributos y las operaciones
+  son de ejemplo; el enunciado no los define.
+end note
+
+@enduml

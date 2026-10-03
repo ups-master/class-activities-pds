@@ -15,7 +15,7 @@ Una tienda gestiona clientes, productos, pedidos y pagos.
 ## Contenido
 
 ```
-diagnostic-eval/
+actividad-diagnostica/
 ├── README.md
 ├── prompt.md               # prompt usado para que una IA actúe como revisora
 ├── revision.md             # resultado de la revisión (secciones A-F)

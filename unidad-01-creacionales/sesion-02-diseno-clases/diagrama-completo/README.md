@@ -14,7 +14,7 @@ Diagrama de clases UML de una tienda que cubre los elementos de la rúbrica: aso
 ## Contenido
 
 ```
-complete-diagram/
+diagrama-completo/
 ├── README.md
 ├── prompt.md               # prompt de revisión con la rúbrica y el enunciado
 ├── revision.md             # revisión del diagrama contra la rúbrica
