@@ -1,0 +1,32 @@
+@startuml
+title Patrón Builder simplificado - Renta
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Renta {
+    - canonArrendamiento : Decimal
+    - alicuota : Decimal
+    - agua : Decimal
+    - electricidad : Decimal
+    - internet : Decimal
+    - parqueadero : Decimal
+    - otrosCargos : Decimal
+}
+
+class ConstructorRenta {
+    - renta : Renta
+
+    + canonArrendamiento(valor : Decimal) : ConstructorRenta
+    + alicuota(valor : Decimal) : ConstructorRenta
+    + agua(valor : Decimal) : ConstructorRenta
+    + electricidad(valor : Decimal) : ConstructorRenta
+    + internet(valor : Decimal) : ConstructorRenta
+    + parqueadero(valor : Decimal) : ConstructorRenta
+    + otrosCargos(valor : Decimal) : ConstructorRenta
+    + construir() : Renta
+}
+
+ConstructorRenta --> Renta : construye
+
+@enduml

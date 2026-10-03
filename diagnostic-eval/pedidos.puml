@@ -1,0 +1,72 @@
+@startuml
+
+class Cliente {
+    -id: int
+    -nombre: String
+    -correo: String
+
+    +realizarPedido(): Pedido
+}
+
+class Producto {
+    -id: int
+    -nombre: String
+    -precio: double
+    -stock: int
+
+    +consultarPrecio(): double
+    +actualizarStock(cantidad: int): void
+}
+
+class Pedido {
+    -id: int
+    -fecha: Date
+    -estado: String
+    -total: double
+
+    +agregarProducto(producto: Producto, cantidad: int): void
+    +calcularTotal(): double
+    +cambiarEstado(estado: String): void
+}
+
+class DetallePedido {
+    -cantidad: int
+    -precioUnitario: double
+
+    +calcularSubtotal(): double
+}
+
+abstract class Pago {
+    -id: int
+    -monto: double
+
+    +procesarPago(): boolean
+}
+
+class PagoTarjeta {
+    -numeroTarjeta: String
+
+    +procesarPago(): boolean
+}
+
+class PagoTransferencia {
+    -banco: String
+    -numeroTransferencia: String
+
+    +procesarPago(): boolean
+}
+
+Cliente "1" --> "0..*" Pedido : realiza
+
+Pedido "1" --> "1..*" DetallePedido : contiene
+
+DetallePedido "0..*" --> "1" Producto : corresponde a
+
+Pedido "1" --> "0..1" Pago : tiene
+
+Pedido ..> Producto : usa
+
+Pago <|-- PagoTarjeta
+Pago <|-- PagoTransferencia
+
+@enduml

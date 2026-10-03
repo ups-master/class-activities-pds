@@ -1,0 +1,75 @@
+@startuml pedidos_java
+class Cliente {
+    -id: int
+    -nombre: String
+    -correo: String
+    -pedidos: List<Pedido>
+    +registrarPedido(): Pedido
+}
+
+class Pedido {
+    -id: int
+    -fecha: LocalDate
+    -estado: String
+    -detalles: List<DetallePedido>
+    +agregarDetalle(producto: Producto, cantidad: int): void
+    +calcularTotal(): double
+    +confirmar(servicio: ServicioPago): boolean
+}
+
+class DetallePedido {
+    -cantidad: int
+    -precioAplicado: double
+    -producto: Producto
+    +calcularSubtotal(): double
+}
+
+abstract class Producto {
+    -id: int
+    -nombre: String
+    -precio: double
+    {abstract} +calcularCostoEntrega(): double
+}
+
+class ProductoFisico {
+    -peso: double
+    -costoBaseEnvio: double
+    +calcularCostoEntrega(): double
+}
+
+class ProductoDigital {
+    -urlDescarga: String
+    +calcularCostoEntrega(): double
+}
+
+class Catalogo {
+    -id: int
+    -nombre: String
+    -productos: List<Producto>
+    +agregarProducto(producto: Producto): void
+    +buscarProducto(id: int): Producto
+}
+
+interface ServicioPago {
+    +procesarPago(monto: double): boolean
+}
+
+' ASOCIACION unidireccional (Cliente.pedidos)
+Cliente "1" --> "0..*" Pedido : registra
+
+' COMPOSICION (Pedido.detalles)
+Pedido "1" *--> "1..*" DetallePedido : contiene
+
+' ASOCIACION unidireccional (DetallePedido.producto)
+DetallePedido "0..*" --> "1" Producto : referencia
+
+' AGREGACION (Catalogo.productos)
+Catalogo "0..1" o--> "0..*" Producto : organiza
+
+' GENERALIZACION (extends)
+Producto <|-- ProductoFisico
+Producto <|-- ProductoDigital
+
+' DEPENDENCIA (parametro de Pedido.confirmar)
+Pedido ..> ServicioPago : utiliza
+@enduml

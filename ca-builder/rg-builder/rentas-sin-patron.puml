@@ -1,0 +1,26 @@
+@startuml
+title Construcción de Renta sin patrón Builder
+
+skinparam classAttributeIconSize 0
+
+class Renta {
+    - canonArrendamiento : Decimal
+    - alicuota : Decimal
+    - agua : Decimal
+    - electricidad : Decimal
+    - internet : Decimal
+    - parqueadero : Decimal
+    - otrosCargos : Decimal
+
+    + Renta(
+        canonArrendamiento : Decimal,
+        alicuota : Decimal,
+        agua : Decimal,
+        electricidad : Decimal,
+        internet : Decimal,
+        parqueadero : Decimal,
+        otrosCargos : Decimal
+      )
+}
+
+@enduml

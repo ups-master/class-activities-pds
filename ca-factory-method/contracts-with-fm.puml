@@ -1,0 +1,51 @@
+@startuml
+title Factory Method - Contratos
+
+left to right direction
+
+abstract class CreadorContrato {
+  + {abstract} crearContrato(): Contrato
+}
+
+class CreadorFijo {
+  + crearContrato(): Contrato
+}
+
+class CreadorTemporal {
+  + crearContrato(): Contrato
+}
+
+class CreadorFactura {
+  + crearContrato(): Contrato
+}
+
+abstract class Contrato {
+  + {abstract} calcularSueldo(): double
+}
+
+class ContratoFijo {
+  + calcularSueldo(): double
+}
+
+class ContratoTemporal {
+  + calcularSueldo(): double
+}
+
+class ContratoFactura {
+  + calcularSueldo(): double
+}
+
+CreadorContrato <|-- CreadorFijo
+CreadorContrato <|-- CreadorTemporal
+CreadorContrato <|-- CreadorFactura
+
+Contrato <|-- ContratoFijo
+Contrato <|-- ContratoTemporal
+Contrato <|-- ContratoFactura
+
+CreadorContrato ..> Contrato
+CreadorFijo ..> ContratoFijo
+CreadorTemporal ..> ContratoTemporal
+CreadorFactura ..> ContratoFactura
+
+@enduml

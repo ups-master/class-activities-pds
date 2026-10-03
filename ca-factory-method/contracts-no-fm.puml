@@ -1,0 +1,23 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+abstract class Contrato {
+  + {abstract} calcularSueldo(): double
+}
+
+class ContratoFijo {
+  + calcularSueldo(): double
+}
+
+class ContratoTemporal {
+  + calcularSueldo(): double
+}
+
+class ContratoPorFactura {
+  + calcularSueldo(): double
+}
+
+Contrato <|-- ContratoFijo
+Contrato <|-- ContratoTemporal
+Contrato <|-- ContratoPorFactura
+@enduml

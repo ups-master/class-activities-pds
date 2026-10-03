@@ -1,0 +1,86 @@
+@startuml
+title Patrón Builder clásico - Reserva de vuelo
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class ReservaVuelo {
+    - origen : String
+    - destino : String
+    - fecha : Date
+    - pasajeros : int
+    - tarifa : Decimal
+    - seleccionAsiento : String
+    - equipajeAdicional : String
+    - alimentacion : String
+    - serviciosEspeciales : String
+}
+
+interface ReservaBuilder {
+    + agregarOrigen(origen : String) : void
+    + agregarDestino(destino : String) : void
+    + agregarFecha(fecha : Date) : void
+    + agregarPasajeros(pasajeros : int) : void
+    + agregarTarifa(tarifa : Decimal) : void
+    + agregarSeleccionAsiento(asiento : String) : void
+    + agregarEquipajeAdicional(equipaje : String) : void
+    + agregarAlimentacion(alimentacion : String) : void
+    + agregarServiciosEspeciales(servicios : String) : void
+    + obtenerReserva() : ReservaVuelo
+}
+
+class ReservaBasicaBuilder {
+    + agregarOrigen(origen : String) : void
+    + agregarDestino(destino : String) : void
+    + agregarFecha(fecha : Date) : void
+    + agregarPasajeros(pasajeros : int) : void
+    + agregarTarifa(tarifa : Decimal) : void
+    + agregarSeleccionAsiento(asiento : String) : void
+    + agregarEquipajeAdicional(equipaje : String) : void
+    + agregarAlimentacion(alimentacion : String) : void
+    + agregarServiciosEspeciales(servicios : String) : void
+    + obtenerReserva() : ReservaVuelo
+}
+
+class ReservaEjecutivaBuilder {
+    + agregarOrigen(origen : String) : void
+    + agregarDestino(destino : String) : void
+    + agregarFecha(fecha : Date) : void
+    + agregarPasajeros(pasajeros : int) : void
+    + agregarTarifa(tarifa : Decimal) : void
+    + agregarSeleccionAsiento(asiento : String) : void
+    + agregarEquipajeAdicional(equipaje : String) : void
+    + agregarAlimentacion(alimentacion : String) : void
+    + agregarServiciosEspeciales(servicios : String) : void
+    + obtenerReserva() : ReservaVuelo
+}
+
+class ReservaEspecialBuilder {
+    + agregarOrigen(origen : String) : void
+    + agregarDestino(destino : String) : void
+    + agregarFecha(fecha : Date) : void
+    + agregarPasajeros(pasajeros : int) : void
+    + agregarTarifa(tarifa : Decimal) : void
+    + agregarSeleccionAsiento(asiento : String) : void
+    + agregarEquipajeAdicional(equipaje : String) : void
+    + agregarAlimentacion(alimentacion : String) : void
+    + agregarServiciosEspeciales(servicios : String) : void
+    + obtenerReserva() : ReservaVuelo
+}
+
+class DirectorReservaVuelo {
+
+    + construirReserva(builder : ReservaBuilder) : ReservaVuelo
+}
+
+ReservaBuilder <|.. ReservaBasicaBuilder
+ReservaBuilder <|.. ReservaEjecutivaBuilder
+ReservaBuilder <|.. ReservaEspecialBuilder
+
+DirectorReservaVuelo "1" --> "1" ReservaBuilder : utiliza
+
+ReservaBasicaBuilder ..> ReservaVuelo : <<create>>
+ReservaEjecutivaBuilder ..> ReservaVuelo : <<create>>
+ReservaEspecialBuilder ..> ReservaVuelo : <<create>>
+
+@enduml

@@ -1,0 +1,84 @@
+@startuml
+title Patrón Builder - Construcción de Renta
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Renta {
+    - canonArrendamiento : Decimal
+    - alicuota : Decimal
+    - agua : Decimal
+    - electricidad : Decimal
+    - internet : Decimal
+    - parqueadero : Decimal
+    - otrosCargos : Decimal
+}
+
+interface ConstructorRenta {
+    + agregarCanonArrendamiento(valor : Decimal) : void
+    + agregarAlicuota(valor : Decimal) : void
+    + agregarAgua(valor : Decimal) : void
+    + agregarElectricidad(valor : Decimal) : void
+    + agregarInternet(valor : Decimal) : void
+    + agregarParqueadero(valor : Decimal) : void
+    + agregarOtrosCargos(valor : Decimal) : void
+    + obtenerRenta() : Renta
+}
+
+class ConstructorRentaDepartamento {
+    - renta : Renta
+
+    + agregarCanonArrendamiento(valor : Decimal) : void
+    + agregarAlicuota(valor : Decimal) : void
+    + agregarAgua(valor : Decimal) : void
+    + agregarElectricidad(valor : Decimal) : void
+    + agregarInternet(valor : Decimal) : void
+    + agregarParqueadero(valor : Decimal) : void
+    + agregarOtrosCargos(valor : Decimal) : void
+    + obtenerRenta() : Renta
+}
+
+class ConstructorRentaCasa {
+    - renta : Renta
+
+    + agregarCanonArrendamiento(valor : Decimal) : void
+    + agregarAlicuota(valor : Decimal) : void
+    + agregarAgua(valor : Decimal) : void
+    + agregarElectricidad(valor : Decimal) : void
+    + agregarInternet(valor : Decimal) : void
+    + agregarParqueadero(valor : Decimal) : void
+    + agregarOtrosCargos(valor : Decimal) : void
+    + obtenerRenta() : Renta
+}
+
+class ConstructorRentaTerreno {
+    - renta : Renta
+
+    + agregarCanonArrendamiento(valor : Decimal) : void
+    + agregarAlicuota(valor : Decimal) : void
+    + agregarAgua(valor : Decimal) : void
+    + agregarElectricidad(valor : Decimal) : void
+    + agregarInternet(valor : Decimal) : void
+    + agregarParqueadero(valor : Decimal) : void
+    + agregarOtrosCargos(valor : Decimal) : void
+    + obtenerRenta() : Renta
+}
+
+class DirectorRenta {
+    - constructor : ConstructorRenta
+
+    + DirectorRenta(constructor : ConstructorRenta)
+    + construirRenta() : Renta
+}
+
+ConstructorRenta <|.. ConstructorRentaDepartamento
+ConstructorRenta <|.. ConstructorRentaCasa
+ConstructorRenta <|.. ConstructorRentaTerreno
+
+DirectorRenta --> ConstructorRenta : utiliza
+
+ConstructorRentaDepartamento --> Renta : construye
+ConstructorRentaCasa --> Renta : construye
+ConstructorRentaTerreno --> Renta : construye
+
+@enduml

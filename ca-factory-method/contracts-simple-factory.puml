@@ -1,0 +1,35 @@
+@startuml
+title Simple Factory - Contratos
+
+left to right direction
+
+class FabricaContrato {
+  + {static} crearContrato(tipo: String): Contrato
+}
+
+abstract class Contrato {
+  + {abstract} calcularSueldo(): double
+}
+
+class ContratoFijo {
+  + calcularSueldo(): double
+}
+
+class ContratoTemporal {
+  + calcularSueldo(): double
+}
+
+class ContratoFactura {
+  + calcularSueldo(): double
+}
+
+Contrato <|-- ContratoFijo
+Contrato <|-- ContratoTemporal
+Contrato <|-- ContratoFactura
+
+FabricaContrato ..> Contrato
+FabricaContrato ..> ContratoFijo
+FabricaContrato ..> ContratoTemporal
+FabricaContrato ..> ContratoFactura
+
+@enduml
