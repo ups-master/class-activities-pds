@@ -1,0 +1,5 @@
+com/ejemplo/configuracion/ModuloReportes.class
+com/ejemplo/configuracion/ModuloInventario.class
+com/ejemplo/configuracion/ModuloFacturacion.class
+com/ejemplo/configuracion/ConfiguracionGlobal.class
+com/ejemplo/configuracion/Main.class

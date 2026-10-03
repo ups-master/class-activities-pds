@@ -1,0 +1,33 @@
+@startuml
+title Patrón Singleton - Configuración Global
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class ConfiguracionGlobal <<Singleton>> {
+    - {static} instancia : ConfiguracionGlobal
+    - parametros : Map<String, String>
+
+    - ConfiguracionGlobal()
+    + {static} obtenerInstancia() : ConfiguracionGlobal
+    + obtenerParametro(clave : String) : String
+    + establecerParametro(clave : String, valor : String) : void
+}
+
+class ModuloFacturacion {
+    + procesar() : void
+}
+
+class ModuloInventario {
+    + procesar() : void
+}
+
+class ModuloReportes {
+    + generar() : void
+}
+
+ModuloFacturacion ..> ConfiguracionGlobal : obtenerInstancia()
+ModuloInventario ..> ConfiguracionGlobal : obtenerInstancia()
+ModuloReportes ..> ConfiguracionGlobal : obtenerInstancia()
+
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+title Caso 1 - Configuración de aplicación
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class ConfiguracionAplicacion <<Singleton>> {
+    - {static} instancia : ConfiguracionAplicacion
+    - parametros : Map<String, String>
+
+    - ConfiguracionAplicacion()
+    + {static} obtenerInstancia() : ConfiguracionAplicacion
+    + cargarConfiguracion() : void
+    + obtenerParametro(clave : String) : String
+}
+
+class ArchivoConfiguracion {
+    - ruta : String
+    + leer() : Map<String, String>
+}
+
+class ModuloInterfaz {
+    + ejecutar() : void
+}
+
+class ModuloAlmacenamiento {
+    + ejecutar() : void
+}
+
+class ModuloReportes {
+    + generar() : void
+}
+
+' La configuración usa el archivo para cargar los parámetros
+ConfiguracionAplicacion ..> ArchivoConfiguracion : lee
+
+' Los módulos acceden al Singleton
+ModuloInterfaz ..> ConfiguracionAplicacion : obtenerInstancia()
+ModuloAlmacenamiento ..> ConfiguracionAplicacion : obtenerInstancia()
+ModuloReportes ..> ConfiguracionAplicacion : obtenerInstancia()
+
+@enduml

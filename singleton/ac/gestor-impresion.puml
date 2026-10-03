@@ -1,0 +1,41 @@
+@startuml
+title Caso 2 - Gestor de impresión
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class GestorImpresion <<Singleton>> {
+    - {static} instancia : GestorImpresion
+    - cola : List<TrabajoImpresion>
+
+    - GestorImpresion()
+    + {static} obtenerInstancia() : GestorImpresion
+    + agregarTrabajo(trabajo : TrabajoImpresion) : void
+    + procesarSiguiente() : void
+}
+
+class TrabajoImpresion {
+    - contenido : String
+}
+
+class ModuloFacturacion {
+    + imprimir() : void
+}
+
+class ModuloReportes {
+    + imprimir() : void
+}
+
+class ModuloEtiquetas {
+    + imprimir() : void
+}
+
+' El gestor administra múltiples trabajos
+GestorImpresion "1" o-- "0..*" TrabajoImpresion : administra
+
+' Los módulos acceden al mismo gestor
+ModuloFacturacion ..> GestorImpresion : obtenerInstancia()
+ModuloReportes ..> GestorImpresion : obtenerInstancia()
+ModuloEtiquetas ..> GestorImpresion : obtenerInstancia()
+
+@enduml

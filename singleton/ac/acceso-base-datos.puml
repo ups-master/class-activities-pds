@@ -1,0 +1,41 @@
+@startuml
+title Caso 4 - Pool de conexiones a base de datos
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class PoolConexiones <<Singleton>> {
+    - {static} instancia : PoolConexiones
+    - conexiones : List<Conexion>
+
+    - PoolConexiones()
+    + {static} obtenerInstancia() : PoolConexiones
+    + obtenerConexion() : Conexion
+    + liberarConexion(conexion : Conexion) : void
+}
+
+class Conexion {
+    - disponible : boolean
+
+    + ejecutar(consulta : String) : void
+}
+
+class RepositorioClientes {
+    + consultar() : void
+}
+
+class RepositorioPedidos {
+    + consultar() : void
+}
+
+class RepositorioProductos {
+    + consultar() : void
+}
+
+PoolConexiones "1" o-- "0..*" Conexion : administra
+
+RepositorioClientes ..> PoolConexiones : obtenerInstancia()
+RepositorioPedidos ..> PoolConexiones : obtenerInstancia()
+RepositorioProductos ..> PoolConexiones : obtenerInstancia()
+
+@enduml

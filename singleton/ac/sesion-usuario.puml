@@ -1,0 +1,49 @@
+@startuml
+title Caso 3 - Gestión de sesiones de usuario
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class GestorSesiones <<Singleton>> {
+    - {static} instancia : GestorSesiones
+    - sesiones : List<SesionUsuario>
+
+    - GestorSesiones()
+    + {static} obtenerInstancia() : GestorSesiones
+    + crearSesion(usuario : Usuario) : SesionUsuario
+    + obtenerSesion(id : String) : SesionUsuario
+    + cerrarSesion(id : String) : void
+}
+
+class SesionUsuario {
+    - identificador : String
+    - fechaInicio : Date
+    - activa : boolean
+
+    + cerrar() : void
+}
+
+class Usuario {
+    - id : int
+    - nombre : String
+}
+
+class ModuloAutenticacion {
+    + autenticar() : void
+}
+
+class ModuloAplicacion {
+    + ejecutar() : void
+}
+
+' Un único gestor administra muchas sesiones
+GestorSesiones "1" o-- "0..*" SesionUsuario : administra
+
+' Cada sesión corresponde a un usuario
+Usuario "1" <-- "0..*" SesionUsuario : pertenece a
+
+' Los módulos utilizan el gestor único
+ModuloAutenticacion ..> GestorSesiones : obtenerInstancia()
+ModuloAplicacion ..> GestorSesiones : obtenerInstancia()
+
+@enduml
