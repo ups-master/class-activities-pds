@@ -10,12 +10,21 @@ Si cada módulo crea su propia configuración con `new`, pueden quedar valores d
 2. **Garantiza una sola instancia**: un atributo estático `instancia` la guarda.
 3. **Da un acceso conocido**: `ConfiguracionGlobal.obtenerInstancia()` la crea la primera vez (inicialización perezosa) y devuelve la misma después. Es `synchronized`, por lo que es segura entre hilos.
 
+## Diagrama
+
+[`configuracion-singleton.puml`](configuracion-singleton.puml)
+
+![Singleton - Configuración Global](diagramas/configuracion-singleton.svg)
+
+`ConfiguracionGlobal` (`<<Singleton>>`) tiene un atributo estático `instancia`, un constructor privado y `obtenerInstancia()`. Los tres módulos tienen una dependencia (`..>`) hacia ella: la usan al ejecutarse, sin guardarla como atributo.
+
 ## Estructura
 
 ```
-rg/
+guided-review/
 ├── README.md
 ├── configuracion-singleton.puml
+├── diagramas/                             # SVG generados
 └── configuracion-singleton/               # proyecto Maven
     ├── pom.xml
     ├── src/main/java/com/ejemplo/configuracion/

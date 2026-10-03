@@ -4,14 +4,41 @@ Construcción de objetos `Renta` (departamentos, casas y terrenos) en tres versi
 sin patrón, Builder clásico y Builder fluido. Los diagramas están en los `.puml` de esta carpeta
 y el código en `rentas-builder/`.
 
+## Diagramas
+
+### Sin patrón
+
+[`rentas-sin-patron.puml`](rentas-sin-patron.puml)
+
+![Sin patrón](diagramas/rentas-sin-patron.svg)
+
+Un único constructor con siete parámetros posicionales.
+
+### Builder clásico
+
+[`rentas-builder-clasico.puml`](rentas-builder-clasico.puml)
+
+![Builder clásico](diagramas/rentas-builder-clasico.svg)
+
+`DirectorRenta` fija el proceso y usa la interfaz `ConstructorRenta`. Los constructores de departamento, casa y terreno la implementan y deciden qué componentes aplican a cada tipo.
+
+### Builder fluido
+
+[`rentas-builder-fluido.puml`](rentas-builder-fluido.puml)
+
+![Builder fluido](diagramas/rentas-builder-fluido.svg)
+
+Un solo `ConstructorRenta` encadenable, sin director ni interfaz.
+
 ## Estructura
 
 ```
-ca-builder/
+guided-review/
 ├── README.md
 ├── rentas-sin-patron.puml
 ├── rentas-builder-clasico.puml
 ├── rentas-builder-fluido.puml
+├── diagramas/                         # SVG generados
 └── rentas-builder/                    # proyecto Maven
     ├── pom.xml
     ├── src/main/java/com/ejemplo/rentas/

@@ -1,41 +1,42 @@
 package pedidos;
 
-import java.math.BigDecimal;
-
 public class Main {
     public static void main(String[] args) {
         Cliente cliente = new Cliente(1, "Ana Pérez", "ana@correo.com");
-        Producto teclado = new Producto(1, "Teclado", new BigDecimal("45.50"));
-        Producto mouse = new Producto(2, "Mouse", new BigDecimal("20.00"));
+        Producto teclado = new ProductoFisico(1, "Teclado", 45.50, 0.8, 3.00);
+        Producto curso = new ProductoDigital(2, "Curso de Java", 20.00, "https://tienda.ejemplo/curso");
 
-        System.out.println("=== Flujo correcto ===");
-        Pedido p = cliente.realizarPedido();
-        p.agregarProducto(teclado, 2);
-        p.agregarProducto(mouse, 1);
-        p.agregarProducto(teclado, 1); // se agrupa: teclado x3
+        Catalogo catalogo = new Catalogo(1, "Tecnología");
+        catalogo.agregarProducto(teclado);
+        catalogo.agregarProducto(curso);
+        System.out.println("Catálogo '" + catalogo.getNombre() + "': " + catalogo.getProductos().size() + " productos");
+        System.out.println("Entrega teclado: " + teclado.calcularCostoEntrega()
+            + " | Entrega curso: " + curso.calcularCostoEntrega());
+
+        System.out.println("\n=== Flujo correcto ===");
+        Pedido p = cliente.registrarPedido();
+        p.agregarDetalle(catalogo.buscarProducto(1), 2);
+        p.agregarDetalle(catalogo.buscarProducto(2), 1);
         System.out.println("Total: " + p.calcularTotal());
-        p.registrarPago(new PagoTarjeta(1, p.calcularTotal(), "1234567812345678"));
-        p.enviar();
-        System.out.println("Estado final: " + p.getEstado());
-        System.out.println("Pedidos del cliente: " + cliente.getPedidos().size());
+        ServicioPago aprobado = monto -> true;
+        System.out.println("Pago aprobado: " + p.confirmar(aprobado) + " -> estado " + p.getEstado());
+
+        System.out.println("\n=== Pago rechazado ===");
+        Pedido q = cliente.registrarPedido();
+        q.agregarDetalle(curso, 1);
+        ServicioPago rechazado = monto -> false;
+        System.out.println("Pago aprobado: " + q.confirmar(rechazado) + " -> estado " + q.getEstado());
 
         System.out.println("\n=== Casos inválidos ===");
-        Pedido q = cliente.realizarPedido();
-        probar("cantidad 0", () -> q.agregarProducto(mouse, 0));
-        probar("pagar pedido sin productos", () -> q.registrarPago(
-            new PagoTransferencia(2, BigDecimal.TEN, "Banco X", "T-001")));
-        probar("enviar sin pagar", q::enviar);
-        q.agregarProducto(mouse, 2);
-        probar("monto distinto al total", () -> q.registrarPago(
-            new PagoTransferencia(3, new BigDecimal("1.00"), "Banco X", "T-002")));
-        probar("tarjeta inválida", () -> new PagoTarjeta(4, new BigDecimal("40.00"), "123"));
+        Pedido r = cliente.registrarPedido();
+        probar("confirmar sin detalles", () -> r.confirmar(aprobado));
+        probar("cantidad 0", () -> r.agregarDetalle(teclado, 0));
+        probar("servicio nulo", () -> q.confirmar(null));
+        probar("agregar tras confirmar", () -> p.agregarDetalle(curso, 1));
+        probar("confirmar dos veces", () -> p.confirmar(aprobado));
+        probar("producto repetido en el catálogo", () -> catalogo.agregarProducto(teclado));
+        probar("precio negativo", () -> new ProductoDigital(3, "X", -1, "http://x"));
         probar("correo inválido", () -> new Cliente(2, "Luis", "no-es-correo"));
-        probar("precio negativo", () -> new Producto(3, "X", new BigDecimal("-1")));
-        q.registrarPago(new PagoTransferencia(5, q.calcularTotal(), "Banco X", "T-003"));
-        probar("agregar tras pagar", () -> q.agregarProducto(mouse, 1));
-        probar("pagar dos veces", () -> q.registrarPago(
-            new PagoTransferencia(6, q.calcularTotal(), "Banco X", "T-004")));
-        probar("cancelar un pedido enviado", p::cancelar);
     }
 
     private static void probar(String caso, Runnable accion) {

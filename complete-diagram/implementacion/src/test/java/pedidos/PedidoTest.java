@@ -2,98 +2,94 @@ package pedidos;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class PedidoTest {
     private Cliente cliente;
-    private Producto teclado;
+    private Producto teclado; // físico: precio 45.50, entrega 3.00 + 0.8 * 1.0 = 3.80
+    private Producto curso;   // digital: precio 20.00, entrega 0
     private Pedido pedido;
 
     @BeforeEach
     void preparar() {
         cliente = new Cliente(1, "Ana Pérez", "ana@correo.com");
-        teclado = new Producto(1, "Teclado", new BigDecimal("45.50"));
-        pedido = cliente.realizarPedido();
+        teclado = new ProductoFisico(1, "Teclado", 45.50, 0.8, 3.00);
+        curso = new ProductoDigital(2, "Curso", 20.00, "https://tienda.ejemplo/curso");
+        pedido = cliente.registrarPedido();
     }
 
     @Test
-    void pedidoPerteneceAUnClienteYNaceEnPendiente() {
-        assertSame(cliente, pedido.getCliente());
+    void elClienteRegistraSusPedidosYNacenPendientes() {
         assertTrue(cliente.getPedidos().contains(pedido));
-        assertEquals(EstadoPedido.PENDIENTE, pedido.getEstado());
+        assertEquals("PENDIENTE", pedido.getEstado());
     }
 
     @Test
-    void calculaTotalAgrupandoProductosRepetidos() {
-        pedido.agregarProducto(teclado, 2);
-        pedido.agregarProducto(teclado, 1);
+    void totalIncluyeElCostoDeEntregaDeCadaTipo() {
+        pedido.agregarDetalle(teclado, 2);
+        pedido.agregarDetalle(curso, 1);
+        assertEquals(2 * (45.50 + 3.80) + 20.00, pedido.calcularTotal(), 1e-9);
+    }
+
+    @Test
+    void agrupaDetallesDelMismoProducto() {
+        pedido.agregarDetalle(curso, 1);
+        pedido.agregarDetalle(curso, 2);
         assertEquals(1, pedido.getDetalles().size());
-        assertEquals(new BigDecimal("136.50"), pedido.calcularTotal());
+        assertEquals(3, pedido.getDetalles().get(0).getCantidad());
     }
 
     @Test
-    void conservaElPrecioDelMomentoDeLaCompra() {
-        pedido.agregarProducto(teclado, 1);
-        teclado.setPrecio(new BigDecimal("99.00"));
-        assertEquals(new BigDecimal("45.50"), pedido.calcularTotal());
+    void conservaElPrecioAplicado() {
+        pedido.agregarDetalle(curso, 1);
+        assertEquals(20.00, pedido.getDetalles().get(0).getPrecioAplicado());
     }
 
     @Test
-    void rechazaCantidadNoPositiva() {
-        assertThrows(IllegalArgumentException.class, () -> pedido.agregarProducto(teclado, 0));
+    void rechazaCantidadNoPositivaYProductoNulo() {
+        assertThrows(IllegalArgumentException.class, () -> pedido.agregarDetalle(teclado, 0));
+        assertThrows(IllegalArgumentException.class, () -> pedido.agregarDetalle(null, 1));
     }
 
     @Test
     void noPermiteModificarLosDetallesDesdeFuera() {
-        pedido.agregarProducto(teclado, 1);
+        pedido.agregarDetalle(curso, 1);
         assertThrows(UnsupportedOperationException.class, () -> pedido.getDetalles().clear());
     }
 
     @Test
-    void noPagaPedidoVacio() {
-        Pago pago = new PagoTransferencia(1, BigDecimal.TEN, "Banco X", "T-1");
-        assertThrows(IllegalStateException.class, () -> pedido.registrarPago(pago));
+    void confirmarConPagoAprobadoCambiaElEstadoYRecibeElTotal() {
+        pedido.agregarDetalle(curso, 2);
+        double[] montoRecibido = new double[1];
+        boolean resultado = pedido.confirmar(monto -> {
+            montoRecibido[0] = monto;
+            return true;
+        });
+        assertTrue(resultado);
+        assertEquals("CONFIRMADO", pedido.getEstado());
+        assertEquals(40.00, montoRecibido[0], 1e-9);
     }
 
     @Test
-    void rechazaPagoConMontoDistinto() {
-        pedido.agregarProducto(teclado, 1);
-        Pago pago = new PagoTransferencia(1, new BigDecimal("1.00"), "Banco X", "T-1");
-        assertThrows(IllegalArgumentException.class, () -> pedido.registrarPago(pago));
-        assertEquals(EstadoPedido.PENDIENTE, pedido.getEstado());
-        assertNull(pedido.getPago());
+    void confirmarConPagoRechazadoDejaElPedidoPendiente() {
+        pedido.agregarDetalle(curso, 1);
+        assertFalse(pedido.confirmar(monto -> false));
+        assertEquals("PENDIENTE", pedido.getEstado());
     }
 
     @Test
-    void noPermiteAgregarNiPagarDosVecesTrasPagar() {
-        pedido.agregarProducto(teclado, 1);
-        pedido.registrarPago(new PagoTarjeta(1, pedido.calcularTotal(), "1234567812345678"));
-        assertThrows(IllegalStateException.class, () -> pedido.agregarProducto(teclado, 1));
-        assertThrows(IllegalStateException.class, () -> pedido.registrarPago(
-            new PagoTarjeta(2, pedido.calcularTotal(), "1234567812345678")));
+    void noConfirmaPedidoVacioNiConServicioNulo() {
+        assertThrows(IllegalStateException.class, () -> pedido.confirmar(monto -> true));
+        pedido.agregarDetalle(curso, 1);
+        assertThrows(IllegalArgumentException.class, () -> pedido.confirmar(null));
     }
 
     @Test
-    void flujoCompletoTerminaEnviado() {
-        pedido.agregarProducto(teclado, 1);
-        pedido.registrarPago(new PagoTarjeta(1, pedido.calcularTotal(), "1234567812345678"));
-        pedido.enviar();
-        assertEquals(EstadoPedido.ENVIADO, pedido.getEstado());
-        assertThrows(IllegalStateException.class, pedido::cancelar);
-    }
-
-    @Test
-    void noEnviaPedidoSinPagar() {
-        pedido.agregarProducto(teclado, 1);
-        assertThrows(IllegalStateException.class, pedido::enviar);
-    }
-
-    @Test
-    void cancelarPedidoPendiente() {
-        pedido.cancelar();
-        assertEquals(EstadoPedido.CANCELADO, pedido.getEstado());
-        assertThrows(IllegalStateException.class, () -> pedido.agregarProducto(teclado, 1));
+    void trasConfirmarNoSeAgregaNiSeConfirmaDeNuevo() {
+        pedido.agregarDetalle(curso, 1);
+        pedido.confirmar(monto -> true);
+        assertThrows(IllegalStateException.class, () -> pedido.agregarDetalle(curso, 1));
+        assertThrows(IllegalStateException.class, () -> pedido.confirmar(monto -> true));
     }
 }

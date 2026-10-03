@@ -1,78 +1,22 @@
-# Factory Method - Contratos
+# Patrón Factory Method
 
-Implementación en Java del patrón **Factory Method** descrita en `contracts-with-fm.puml`.
+Define una interfaz (método) para crear un objeto, pero deja que las **subclases decidan qué clase concreta instanciar**. El cliente depende solo de la abstracción.
 
-## Estructura
+## Cuándo usarlo
 
-El código está en la carpeta `contratos-factory-method/`.
+Cuando el código cliente no debe conocer la clase concreta que crea, o cuando se quieren añadir nuevos tipos sin modificar el código existente (principio abierto/cerrado).
 
-```
-contratos-factory-method/src/main/java/com/ejemplo/contratos/
-├── Main.java
-├── modelo/                  # Productos
-│   ├── Contrato.java        (abstracta: calcularSueldo())
-│   ├── ContratoFijo.java
-│   ├── ContratoTemporal.java
-│   └── ContratoFactura.java
-└── creador/                 # Creadores (factory method: crearContrato())
-    ├── CreadorContrato.java (abstracta)
-    ├── CreadorFijo.java
-    ├── CreadorTemporal.java
-    └── CreadorFactura.java
-contratos-factory-method/src/test/java/...          # Pruebas JUnit 5
-```
+## Participantes
 
-| Creador            | Producto            | Cálculo del sueldo                       |
-|--------------------|---------------------|------------------------------------------|
-| `CreadorFijo`      | `ContratoFijo`      | `salarioMensual`                         |
-| `CreadorTemporal`  | `ContratoTemporal`  | `salarioMensual * (1 - 0.10)` (retención) |
-| `CreadorFactura`   | `ContratoFactura`   | `horas * tarifaPorHora`                  |
+| Rol | Ejemplo en el repo |
+|---|---|
+| Producto | `Contrato` (abstracta) |
+| Productos concretos | `ContratoFijo`, `ContratoTemporal`, `ContratoFactura` |
+| Creador | `CreadorContrato` (abstracta, con `crearContrato()`) |
+| Creadores concretos | `CreadorFijo`, `CreadorTemporal`, `CreadorFactura` |
 
-> El diagrama solo define `calcularSueldo(): double`. Las fórmulas y los datos de
-> cada contrato son supuestos de ejemplo; cada creador recibe sus datos por
-> constructor porque `crearContrato()` no tiene parámetros.
+## Contenido
 
-## Requisitos
-
-- Java 25
-- Maven 3.8+ (solo para compilar y ejecutar las pruebas con `mvn`)
-
-## Uso
-
-Los comandos se ejecutan desde `contratos-factory-method/` (`cd contratos-factory-method`).
-
-```java
-CreadorContrato creador = new CreadorTemporal(1500);
-Contrato contrato = creador.crearContrato();
-double sueldo = contrato.calcularSueldo(); // 1350.0
-```
-
-El cliente depende solo de `CreadorContrato` y `Contrato`. Para soportar un nuevo
-tipo de contrato basta con crear un `Contrato` y su `Creador`, sin modificar código existente.
-
-### Ejecutar la demo
-
-```bash
-mvn compile exec:java -Dexec.mainClass=com.ejemplo.contratos.Main
-```
-
-Salida:
-
-```
-ContratoFijo -> sueldo: 2000.00
-ContratoTemporal -> sueldo: 1350.00
-ContratoFactura -> sueldo: 2000.00
-```
-
-### Ejecutar las pruebas
-
-```bash
-mvn test
-```
-
-### Sin Maven (solo javac)
-
-```bash
-javac -d out $(find src/main -name '*.java')
-java -cp out com.ejemplo.contratos.Main
-```
+| Carpeta | Qué contiene |
+|---|---|
+| [`guided-review/`](guided-review) | Tres diagramas (sin patrón, Simple Factory y Factory Method) y la implementación en Java del Factory Method. |

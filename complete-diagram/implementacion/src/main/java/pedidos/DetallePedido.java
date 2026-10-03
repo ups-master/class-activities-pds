@@ -1,12 +1,11 @@
 package pedidos;
 
-import java.math.BigDecimal;
-
 public class DetallePedido {
     private final Producto producto;
     private int cantidad;
-    private final BigDecimal precioUnitario; // precio capturado al momento de la compra
+    private final double precioAplicado; // precio capturado al momento de la compra
 
+    // Solo Pedido lo crea: el detalle es parte de su composición
     DetallePedido(Producto producto, int cantidad) {
         if (producto == null) {
             throw new IllegalArgumentException("El producto es obligatorio");
@@ -16,14 +15,13 @@ public class DetallePedido {
         }
         this.producto = producto;
         this.cantidad = cantidad;
-        this.precioUnitario = producto.getPrecio();
+        this.precioAplicado = producto.obtenerPrecio();
     }
 
     public Producto getProducto() { return producto; }
     public int getCantidad() { return cantidad; }
-    public BigDecimal getPrecioUnitario() { return precioUnitario; }
+    public double getPrecioAplicado() { return precioAplicado; }
 
-    // Solo accesible desde Pedido (mismo paquete): el detalle es parte de su composición
     void sumarCantidad(int adicional) {
         if (adicional <= 0) {
             throw new IllegalArgumentException("La cantidad debe ser mayor que cero");
@@ -31,7 +29,8 @@ public class DetallePedido {
         cantidad += adicional;
     }
 
-    public BigDecimal calcularSubtotal() {
-        return precioUnitario.multiply(BigDecimal.valueOf(cantidad));
+    // Supuesto: el costo de entrega se cobra por unidad
+    public double calcularSubtotal() {
+        return cantidad * (precioAplicado + producto.calcularCostoEntrega());
     }
 }
